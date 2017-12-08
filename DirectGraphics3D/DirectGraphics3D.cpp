@@ -6,8 +6,10 @@
 * @file		DirectGraphics3D.cpp
 * @brief	This File is DirectGraphics3D DLL Project.
 * @author	Alopex/Helium
-* @version	v1.00a
-* @date		2017-11-29
+* @version	v1.11a
+* @date		2017-11-29	v1.00a	alopex	Create Project
+* @date		2017-12-3	v1.01a	alopex	Modify Bug
+* @date		2017-12-8	v1.10a	alopex	Code Do Not Rely On MSVCR Library
 */
 #include "DirectCommon.h"
 #include "DirectGraphics3D.h"
@@ -60,13 +62,13 @@ DirectGraphics3D::DirectGraphics3D(IDirect3DDevice9* pD3D9Device)
 // @Function:	 DirectGraphics3DInit(int nPlane)
 // @Purpose: DirectGraphics3D初始化
 // @Since: v1.00a
-// @Para: int nPlane	//绘制平面数(立方体6个平面)(以此类推...)(Vertex类型:Normal)
+// @Para: int nPlane	//绘制平面数(立方体6个平面)(以此类推...)(Vertex类型:Base)
 // @Return: None
 //-------------------------------------------------------------------------------
 HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(int nPlane)
 {
 	//VertexBuffer创建顶点缓存
-	VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), 0, D3DFVF_VERTEX3D_NORMAL, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
+	VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), 0, D3DFVF_VERTEX3D_BASE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 
 	//IndexBuffer创建索引缓存
 	VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_pD3D9IndexBuffer, NULL));
@@ -85,7 +87,7 @@ HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(int nPlane)
 HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(int nPlane, LPCWSTR lpszStrTexture)
 {
 	//VertexBuffer创建顶点缓存
-	VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), 0, D3DFVF_VERTEX3D_NORMAL, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
+	VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), 0, D3DFVF_VERTEX3D_TEXTURE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 
 	//IndexBuffer创建索引缓存
 	VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_pD3D9IndexBuffer, NULL));
@@ -110,13 +112,13 @@ HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(Vertex3DType eVertex3DType
 	{
 	case Vertex3D_Type_Base:
 		//VertexBuffer创建顶点缓存
-		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DBase), 0, D3DFVF_VERTEX3D_NORMAL, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DBase), 0, D3DFVF_VERTEX3D_BASE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 		//IndexBuffer创建索引缓存
 		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_pD3D9IndexBuffer, NULL));
 		break;
 	case Vertex3D_Type_Texture:
 		//VertexBuffer创建顶点缓存
-		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), 0, D3DFVF_VERTEX3D_NORMAL, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), 0, D3DFVF_VERTEX3D_TEXTURE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 		//IndexBuffer创建索引缓存
 		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_pD3D9IndexBuffer, NULL));
 		break;
@@ -128,13 +130,13 @@ HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(Vertex3DType eVertex3DType
 		break;
 	case Vertex3D_Type_Normal_Texture:
 		//VertexBuffer创建顶点缓存
-		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalTexture), 0, D3DFVF_VERTEX3D_NORMAL, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalTexture), 0, D3DFVF_VERTEX3D_NORMAL_TEXTURE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 		//IndexBuffer创建索引缓存
 		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_pD3D9IndexBuffer, NULL));
 		break;
 	case Vertex3D_Type_Normal_Specular_Texture:
 		//VertexBuffer创建顶点缓存
-		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalSpecularTexture), 0, D3DFVF_VERTEX3D_NORMAL, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalSpecularTexture), 0, D3DFVF_VERTEX3D_NORMAL_SPECULAR_TEXTURE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 		//IndexBuffer创建索引缓存
 		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_pD3D9IndexBuffer, NULL));
 		break;
@@ -161,13 +163,13 @@ HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(Vertex3DType eVertex3DType
 	{
 	case Vertex3D_Type_Base:
 		//VertexBuffer创建顶点缓存
-		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DBase), 0, D3DFVF_VERTEX3D_NORMAL, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DBase), 0, D3DFVF_VERTEX3D_BASE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 		//IndexBuffer创建索引缓存
 		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_pD3D9IndexBuffer, NULL));
 		break;
 	case Vertex3D_Type_Texture:
 		//VertexBuffer创建顶点缓存
-		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), 0, D3DFVF_VERTEX3D_NORMAL, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), 0, D3DFVF_VERTEX3D_TEXTURE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 		//IndexBuffer创建索引缓存
 		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_pD3D9IndexBuffer, NULL));
 		//Texture创建平面纹理
@@ -181,7 +183,7 @@ HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(Vertex3DType eVertex3DType
 		break;
 	case Vertex3D_Type_Normal_Texture:
 		//VertexBuffer创建顶点缓存
-		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalTexture), 0, D3DFVF_VERTEX3D_NORMAL, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalTexture), 0, D3DFVF_VERTEX3D_NORMAL_TEXTURE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 		//IndexBuffer创建索引缓存
 		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_pD3D9IndexBuffer, NULL));
 		//Texture创建平面纹理
@@ -189,7 +191,7 @@ HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(Vertex3DType eVertex3DType
 		break;
 	case Vertex3D_Type_Normal_Specular_Texture:
 		//VertexBuffer创建顶点缓存
-		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalSpecularTexture), 0, D3DFVF_VERTEX3D_NORMAL, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalSpecularTexture), 0, D3DFVF_VERTEX3D_NORMAL_SPECULAR_TEXTURE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 		//IndexBuffer创建索引缓存
 		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_pD3D9IndexBuffer, NULL));
 		//Texture创建平面ee纹理
@@ -948,7 +950,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DType eVertex
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingIndex(int nPlane)
 {
 	WORD* pIndices = NULL;
-	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pIndices, 0);
+	m_pD3D9IndexBuffer->Lock(0, 0, (void**)&pIndices, 0);
 
 	for (int i = 0; i < nPlane; ++i)
 	{
@@ -961,7 +963,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingIndex(int nPlane)
 		*(pIndices + 6 * i + 5) = 4 * i + 3;
 	}
 
-	m_pD3D9VertexBuffer->Unlock();
+	m_pD3D9IndexBuffer->Unlock();
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
@@ -987,7 +989,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DBase
 
 	//填充索引缓存
 	WORD* pIndices = NULL;
-	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pIndices, 0);
+	m_pD3D9IndexBuffer->Lock(0, 0, (void**)&pIndices, 0);
 
 	for (int i = 0; i < nPlane; ++i)
 	{
@@ -1000,7 +1002,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DBase
 		*(pIndices + 6 * i + 5) = 4 * i + 3;
 	}
 
-	m_pD3D9VertexBuffer->Unlock();
+	m_pD3D9IndexBuffer->Unlock();
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
@@ -1026,7 +1028,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DText
 
 	//填充索引缓存
 	WORD* pIndices = NULL;
-	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pIndices, 0);
+	m_pD3D9IndexBuffer->Lock(0, 0, (void**)&pIndices, 0);
 
 	for (int i = 0; i < nPlane; ++i)
 	{
@@ -1039,7 +1041,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DText
 		*(pIndices + 6 * i + 5) = 4 * i + 3;
 	}
 
-	m_pD3D9VertexBuffer->Unlock();
+	m_pD3D9IndexBuffer->Unlock();
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
@@ -1065,7 +1067,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNorm
 
 	//填充索引缓存
 	WORD* pIndices = NULL;
-	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pIndices, 0);
+	m_pD3D9IndexBuffer->Lock(0, 0, (void**)&pIndices, 0);
 
 	for (int i = 0; i < nPlane; ++i)
 	{
@@ -1078,7 +1080,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNorm
 		*(pIndices + 6 * i + 5) = 4 * i + 3;
 	}
 
-	m_pD3D9VertexBuffer->Unlock();
+	m_pD3D9IndexBuffer->Unlock();
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
@@ -1104,7 +1106,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNorm
 
 	//填充索引缓存
 	WORD* pIndices = NULL;
-	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pIndices, 0);
+	m_pD3D9IndexBuffer->Lock(0, 0, (void**)&pIndices, 0);
 
 	for (int i = 0; i < nPlane; ++i)
 	{
@@ -1117,7 +1119,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNorm
 		*(pIndices + 6 * i + 5) = 4 * i + 3;
 	}
 
-	m_pD3D9VertexBuffer->Unlock();
+	m_pD3D9IndexBuffer->Unlock();
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
@@ -1143,7 +1145,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNorm
 
 	//填充索引缓存
 	WORD* pIndices = NULL;
-	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pIndices, 0);
+	m_pD3D9IndexBuffer->Lock(0, 0, (void**)&pIndices, 0);
 
 	for (int i = 0; i < nPlane; ++i)
 	{
@@ -1156,7 +1158,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNorm
 		*(pIndices + 6 * i + 5) = 4 * i + 3;
 	}
 
-	m_pD3D9VertexBuffer->Unlock();
+	m_pD3D9IndexBuffer->Unlock();
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
@@ -1229,7 +1231,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DType
 
 	//填充索引缓存
 	WORD* pIndices = NULL;
-	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pIndices, 0);
+	m_pD3D9IndexBuffer->Lock(0, 0, (void**)&pIndices, 0);
 
 	for (int i = 0; i < nPlane; ++i)
 	{
@@ -1242,7 +1244,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DType
 		*(pIndices + 6 * i + 5) = 4 * i + 3;
 	}
 
-	m_pD3D9VertexBuffer->Unlock();
+	m_pD3D9IndexBuffer->Unlock();
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
@@ -1267,6 +1269,30 @@ void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateAlphaEnable()
 void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateAlphaDisable()
 {
 	m_pD3D9Device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);					//Alpha混合关闭
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------------------
+// @Function:	 DirectGraphics3DRenderStateLightEnable()
+// @Purpose: DirectGraphics3D开启Light光照
+// @Since: v1.00a
+// @Para: None
+// @Return: None
+//---------------------------------------------------------------------------------------------------------------------------------------------
+void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateLightEnable()
+{
+	m_pD3D9Device->SetRenderState(D3DRS_LIGHTING, TRUE);							//Light开启光照
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------------------
+// @Function:	 DirectGraphics3DRenderStateLightDisable()
+// @Purpose: DirectGraphics3D关闭Light光照
+// @Since: v1.00a
+// @Para: None
+// @Return: None
+//---------------------------------------------------------------------------------------------------------------------------------------------
+void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateLightDisable()
+{
+	m_pD3D9Device->SetRenderState(D3DRS_LIGHTING, FALSE);							//Light关闭光照
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------

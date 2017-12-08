@@ -6,8 +6,10 @@
 * @file		DirectGraphics3D.h
 * @brief	This File is DirectGraphics3D DLL Project.
 * @author	Alopex/Helium
-* @version	v1.00a
-* @date		2017-11-29
+* @version	v1.11a
+* @date		2017-11-29	v1.00a	alopex	Create Project
+* @date		2017-12-3	v1.01a	alopex	Modify Bug
+* @date		2017-12-8	v1.10a	alopex	Code Do Not Rely On MSVCR Library
 */
 #pragma once
 
@@ -235,6 +237,8 @@ public:
 	//渲染模式
 	virtual void WINAPI DirectGraphics3DRenderStateAlphaEnable();																//DirectGraphics3D Render State Setting(开启Alpha混合)//渲染完毕关闭Alpha混合
 	virtual void WINAPI DirectGraphics3DRenderStateAlphaDisable();																//DirectGraphics3D Render State Setting(关闭Alpha混合)
+	virtual void WINAPI DirectGraphics3DRenderStateLightEnable();																//DirectGraphics3D Render State Setting(开启Light光照)
+	virtual void WINAPI DirectGraphics3DRenderStateLightDisable();																//DirectGraphics3D Render State Setting(关闭Light光照)
 	virtual void WINAPI DirectGraphics3DRenderStateSetting();																	//DirectGraphics3D Render State Setting(设置渲染模式)
 
 	//渲染
