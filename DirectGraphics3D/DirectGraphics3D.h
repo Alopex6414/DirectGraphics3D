@@ -6,10 +6,12 @@
 * @file		DirectGraphics3D.h
 * @brief	This File is DirectGraphics3D DLL Project.
 * @author	Alopex/Helium
-* @version	v1.11a
-* @date		2017-11-29	v1.00a	alopex	Create Project
-* @date		2017-12-3	v1.01a	alopex	Modify Bug
-* @date		2017-12-8	v1.10a	alopex	Code Do Not Rely On MSVCR Library
+* @version	v1.21a
+* @date		2017-11-29	v1.00a	alopex	Create Project.
+* @date		2017-12-3	v1.01a	alopex	Modify Bug.
+* @date		2017-12-8	v1.10a	alopex	Code Do Not Rely On MSVCR Library.
+* @date		2018-1-10	v1.20a	alopex	Code Add dxerr & d3dcompiler Library and Modify Verify.
+* @date		2018-1-10	v1.24a	alopex	Add Thread Safe File & Variable(DirectThreadSafe).
 */
 #pragma once
 
@@ -168,6 +170,9 @@ protected:
 
 private:
 	LPDIRECT3DTEXTURE9 m_pD3D9Texture;						//The Direct3D 9 Texture
+
+	CRITICAL_SECTION m_cs;									//Thread Safe(CriticalSection)
+	bool m_bThreadSafe;										//Thread Safe Status
 
 public:
 	DirectGraphics3D();				//DirectGraphics3D Constructor Function

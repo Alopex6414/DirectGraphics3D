@@ -6,13 +6,16 @@
 * @file		DirectGraphics3D.cpp
 * @brief	This File is DirectGraphics3D DLL Project.
 * @author	Alopex/Helium
-* @version	v1.11a
-* @date		2017-11-29	v1.00a	alopex	Create Project
-* @date		2017-12-3	v1.01a	alopex	Modify Bug
-* @date		2017-12-8	v1.10a	alopex	Code Do Not Rely On MSVCR Library
+* @version	v1.21a
+* @date		2017-11-29	v1.00a	alopex	Create Project.
+* @date		2017-12-3	v1.01a	alopex	Modify Bug.
+* @date		2017-12-8	v1.10a	alopex	Code Do Not Rely On MSVCR Library.
+* @date		2018-1-10	v1.20a	alopex	Code Add dxerr & d3dcompiler Library and Modify Verify.
+* @date		2018-1-10	v1.24a	alopex	Add Thread Safe File & Variable(DirectThreadSafe).
 */
 #include "DirectCommon.h"
 #include "DirectGraphics3D.h"
+#include "DirectThreadSafe.h"
 
 //------------------------------------------------------------------
 // @Function:	 DirectGraphics3D()
@@ -23,6 +26,9 @@
 //------------------------------------------------------------------
 DirectGraphics3D::DirectGraphics3D()
 {
+	m_bThreadSafe = true;									//线程安全
+	if (m_bThreadSafe) InitializeCriticalSection(&m_cs);	//初始化临界区
+
 	m_pD3D9Device = NULL;					//IDirect3DDevice9接口指针初始化(NULL)
 	m_pD3D9VertexBuffer = NULL;				//IDirect3DVertexBuffer9接口指针初始化(NULL)
 	m_pD3D9IndexBuffer = NULL;				//IDirect3DIndexBuffer9接口指针初始化(NULL)
@@ -41,6 +47,8 @@ DirectGraphics3D::~DirectGraphics3D()
 	SAFE_RELEASE(m_pD3D9VertexBuffer);		//IDirect3DVertexBuffer9接口指针释放
 	SAFE_RELEASE(m_pD3D9IndexBuffer);		//IDirect3DIndexBuffer9接口指针释放
 	SAFE_RELEASE(m_pD3D9Texture);			//IDirect3DTexture9接口指针释放
+
+	if (m_bThreadSafe) DeleteCriticalSection(&m_cs);	//删除临界区
 }
 
 //------------------------------------------------------------------
@@ -52,6 +60,9 @@ DirectGraphics3D::~DirectGraphics3D()
 //------------------------------------------------------------------
 DirectGraphics3D::DirectGraphics3D(IDirect3DDevice9* pD3D9Device)
 {
+	m_bThreadSafe = true;									//线程安全
+	if (m_bThreadSafe) InitializeCriticalSection(&m_cs);	//初始化临界区
+
 	m_pD3D9Device = pD3D9Device;			//IDirect3DDevice9接口指针初始化
 	m_pD3D9VertexBuffer = NULL;				//IDirect3DVertexBuffer9接口指针初始化(NULL)
 	m_pD3D9IndexBuffer = NULL;				//IDirect3DIndexBuffer9接口指针初始化(NULL)
@@ -67,6 +78,8 @@ DirectGraphics3D::DirectGraphics3D(IDirect3DDevice9* pD3D9Device)
 //-------------------------------------------------------------------------------
 HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(int nPlane)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	//VertexBuffer创建顶点缓存
 	VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), 0, D3DFVF_VERTEX3D_BASE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 
@@ -86,6 +99,8 @@ HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(int nPlane)
 //------------------------------------------------------------------------------------------------
 HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(int nPlane, LPCWSTR lpszStrTexture)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	//VertexBuffer创建顶点缓存
 	VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), 0, D3DFVF_VERTEX3D_TEXTURE, D3DPOOL_DEFAULT, &m_pD3D9VertexBuffer, NULL));
 
@@ -108,6 +123,8 @@ HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(int nPlane, LPCWSTR lpszSt
 //------------------------------------------------------------------------------------------------
 HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(Vertex3DType eVertex3DType, int nPlane)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	switch (eVertex3DType)
 	{
 	case Vertex3D_Type_Base:
@@ -159,6 +176,8 @@ HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(Vertex3DType eVertex3DType
 //---------------------------------------------------------------------------------------------------
 HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(Vertex3DType eVertex3DType, int nPlane, LPCWSTR lpszStrTexture)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	switch (eVertex3DType)
 	{
 	case Vertex3D_Type_Base:
@@ -214,6 +233,7 @@ HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(Vertex3DType eVertex3DType
 //---------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixWorld;									//世界变换矩阵
 	D3DXMATRIX MatrixScale;									//缩放变换矩阵
 
@@ -232,6 +252,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara
 //---------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_RotatePara sRotatePara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixWorld;									//世界变换矩阵
 	D3DXMATRIX MatrixRotateX, MatrixRotateY, MatrixRotateZ;	//旋转变换矩阵
 
@@ -252,6 +273,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_RotatePar
 //---------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_TranslatePara sTranslatePara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixWorld;									//世界变换矩阵
 	D3DXMATRIX MatrixTranslate;								//平移变换矩阵
 
@@ -270,6 +292,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_Translate
 //---------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara, DG3D_RotatePara sRotatePara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixWorld;									//世界变换矩阵
 	D3DXMATRIX MatrixScale;									//缩放变换矩阵
 	D3DXMATRIX MatrixRotateX, MatrixRotateY, MatrixRotateZ;	//旋转变换矩阵
@@ -292,6 +315,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara
 //---------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara, DG3D_TranslatePara sTranslatePara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixWorld;									//世界变换矩阵
 	D3DXMATRIX MatrixScale;									//缩放变换矩阵
 	D3DXMATRIX MatrixTranslate;								//平移变换矩阵
@@ -312,6 +336,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara
 //---------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_RotatePara sRotatePara, DG3D_TranslatePara sTranslatePara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixWorld;									//世界变换矩阵
 	D3DXMATRIX MatrixRotateX, MatrixRotateY, MatrixRotateZ;	//旋转变换矩阵
 	D3DXMATRIX MatrixTranslate;								//平移变换矩阵
@@ -334,6 +359,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_RotatePar
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara, DG3D_RotatePara sRotatePara, DG3D_TranslatePara sTranslatePara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixWorld;									//世界变换矩阵
 	D3DXMATRIX MatrixScale;									//缩放变换矩阵
 	D3DXMATRIX MatrixRotateX, MatrixRotateY, MatrixRotateZ;	//旋转变换矩阵
@@ -358,6 +384,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_WorldTransformPara sWorldTransformPara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixWorld;									//世界变换矩阵
 	D3DXMATRIX MatrixScale;									//缩放变换矩阵
 	D3DXMATRIX MatrixRotateX, MatrixRotateY, MatrixRotateZ;	//旋转变换矩阵
@@ -382,6 +409,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DWorldSpaceTransform(DG3D_WorldTran
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pvEye)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixView;
 	D3DXVECTOR3 Vector_At(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 Vector_Up(0.0f, 1.0f, 0.0f);
@@ -399,6 +427,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pv
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pvEye, D3DXVECTOR3* pvAt)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixView;
 	D3DXVECTOR3 Vector_Up(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&MatrixView, pvEye, pvEye, &Vector_Up);
@@ -416,6 +445,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pv
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pvEye, D3DXVECTOR3* pvAt, D3DXVECTOR3* pvUp)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixView;
 	D3DXMatrixLookAtLH(&MatrixView, pvEye, pvAt, pvUp);
 	m_pD3D9Device->SetTransform(D3DTS_VIEW, &MatrixView);
@@ -432,6 +462,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pv
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DViewSpaceTransform(DG3D_ViewTransformPara sViewTransformPara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixView;
 	D3DXMatrixLookAtLH(&MatrixView, &(sViewTransformPara.vEye), &(sViewTransformPara.vAt), &(sViewTransformPara.vUp));
 	m_pD3D9Device->SetTransform(D3DTS_VIEW, &MatrixView);
@@ -446,6 +477,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DViewSpaceTransform(DG3D_ViewTransf
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPerspectiveTransform(DG3D_PrespectiveTransformPara sPrespectiveTransformPara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixProject;
 	D3DXMatrixPerspectiveFovLH(&MatrixProject, sPrespectiveTransformPara.fovy, sPrespectiveTransformPara.fAspect, sPrespectiveTransformPara.fZn, sPrespectiveTransformPara.fZf);
 	m_pD3D9Device->SetTransform(D3DTS_PROJECTION, &MatrixProject);
@@ -460,6 +492,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPerspectiveTransform(DG3D_Prespect
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPerspectiveTransform(float fovy, float fAspect, float fZn, float fZf)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixProject;
 	D3DXMatrixPerspectiveFovLH(&MatrixProject, fovy, fAspect, fZn, fZf);
 	m_pD3D9Device->SetTransform(D3DTS_PROJECTION, &MatrixProject);
@@ -474,6 +507,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPerspectiveTransform(float fovy, f
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DViewPortTransform(DG3D_ViewPortTransformPara sViewPortTransformPara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DVIEWPORT9 ViewPort;
 	ViewPort.X = 0;
 	ViewPort.Y = 0;
@@ -493,6 +527,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DViewPortTransform(DG3D_ViewPortTra
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DViewPortTransform(int nUserWidth, int nUserHeight)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DVIEWPORT9 ViewPort;
 	ViewPort.X = 0;
 	ViewPort.Y = 0;
@@ -512,6 +547,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DViewPortTransform(int nUserWidth, 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DMatrixTransform(DG3D_WorldTransformPara sWorldTransformPara, DG3D_ViewTransformPara sViewTransformPara, DG3D_PrespectiveTransformPara sPrespectiveTransformPara, DG3D_ViewPortTransformPara sViewPortTransformPara)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DXMATRIX MatrixWorld;									//世界变换矩阵
 	D3DXMATRIX MatrixScale;									//缩放变换矩阵
 	D3DXMATRIX MatrixRotateX, MatrixRotateY, MatrixRotateZ;	//旋转变换矩阵
@@ -554,6 +590,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DMatrixTransform(DG3D_WorldTransfor
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DLightSettingPoint(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vPosition, float fRange, D3DCOLOR dwAmbientLight)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DLIGHT9 D3D9Light;
 
 	ZeroMemory(&D3D9Light, sizeof(D3DLIGHT9));		//清除内存
@@ -583,6 +620,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DLightSettingPoint(D3DXCOLOR cAmbie
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DLightSettingDirectional(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vDirectional, D3DCOLOR dwAmbientLight)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DLIGHT9 D3D9Light;
 
 	ZeroMemory(&D3D9Light, sizeof(D3DLIGHT9));		//清除内存
@@ -608,6 +646,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DLightSettingDirectional(D3DXCOLOR 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DLightSettingSpot(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vPosition, D3DXVECTOR3 vDirectional, float fRange, float fFallOff, float fPhi, float fTheta, D3DCOLOR dwAmbientLight)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DLIGHT9 D3D9Light;
 
 	ZeroMemory(&D3D9Light, sizeof(D3DLIGHT9));		//清除内存
@@ -641,6 +680,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DLightSettingSpot(D3DXCOLOR cAmbien
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DLightSetting(D3DLIGHT9* pD3D9Light, D3DCOLOR dwAmbientLight)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	m_pD3D9Device->SetLight(0, pD3D9Light);										//设置光源  
 	m_pD3D9Device->LightEnable(0, true);										//启用光照  
 	m_pD3D9Device->SetRenderState(D3DRS_AMBIENT, dwAmbientLight);				//设置一下环境光
@@ -656,6 +696,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DLightSetting(D3DLIGHT9* pD3D9Light
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DLightSetting(LightType eLightType, D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vPosition, D3DXVECTOR3 vDirectional, float fRange, float fFallOff, float fPhi, float fTheta, D3DCOLOR dwAmbientLight)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DLIGHT9 D3D9Light;
 
 	ZeroMemory(&D3D9Light, sizeof(D3DLIGHT9));		//清除内存
@@ -714,6 +755,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DLightSetting(LightType eLightType,
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DMaterialSetting(D3DMATERIAL9* pD3D9Material)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	m_pD3D9Device->SetMaterial(pD3D9Material);				//设置一下材质
 }
 
@@ -726,6 +768,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DMaterialSetting(D3DMATERIAL9* pD3D
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DMaterialSetting(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXCOLOR cEmissive)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DMATERIAL9 D3D9Material;
 
 	ZeroMemory(&D3D9Material, sizeof(D3DMATERIAL9));		//清除内存
@@ -747,6 +790,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DMaterialSetting(D3DXCOLOR cAmbient
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DMaterialSetting(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXCOLOR cEmissive, float fPower)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	D3DMATERIAL9 D3D9Material;
 
 	ZeroMemory(&D3D9Material, sizeof(D3DMATERIAL9));		//清除内存
@@ -770,6 +814,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DMaterialSetting(D3DXCOLOR cAmbient
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DBase* VertexArray, int nSize)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	Vertex3DBase* pVertices = NULL;
 
 	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
@@ -792,6 +837,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DBase* Vertex
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DTexture* VertexArray, int nSize)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	Vertex3DTexture* pVertices = NULL;
 
 	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
@@ -814,6 +860,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DTexture* Ver
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DNormal* VertexArray, int nSize)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	Vertex3DNormal* pVertices = NULL;
 
 	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
@@ -836,6 +883,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DNormal* Vert
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DNormalTexture* VertexArray, int nSize)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	Vertex3DNormalTexture* pVertices = NULL;
 
 	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
@@ -858,6 +906,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DNormalTextur
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DNormalSpecularTexture* VertexArray, int nSize)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	Vertex3DNormalSpecularTexture* pVertices = NULL;
 
 	m_pD3D9VertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
@@ -881,6 +930,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DNormalSpecul
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DType eVertex3DType, LPVOID VertexArray, int nSize)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	Vertex3DBase* pVertices3DBase = NULL;
 	Vertex3DTexture* pVertices3DTexture = NULL;
 	Vertex3DNormal* pVertices3DNormal = NULL;
@@ -949,6 +999,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertex(Vertex3DType eVertex
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingIndex(int nPlane)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	WORD* pIndices = NULL;
 	m_pD3D9IndexBuffer->Lock(0, 0, (void**)&pIndices, 0);
 
@@ -975,6 +1026,8 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingIndex(int nPlane)
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DBase* VertexArray, int nPlane)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	//填充顶点缓存
 	Vertex3DBase* pVertices = NULL;
 
@@ -1014,6 +1067,8 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DBase
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DTexture* VertexArray, int nPlane)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	//填充顶点缓存
 	Vertex3DTexture* pVertices = NULL;
 
@@ -1053,6 +1108,8 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DText
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNormal* VertexArray, int nPlane)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	//填充顶点缓存
 	Vertex3DNormal* pVertices = NULL;
 
@@ -1092,6 +1149,8 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNorm
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNormalTexture* VertexArray, int nPlane)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	//填充顶点缓存
 	Vertex3DNormalTexture* pVertices = NULL;
 
@@ -1131,6 +1190,8 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNorm
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNormalSpecularTexture* VertexArray, int nPlane)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	//填充顶点缓存
 	Vertex3DNormalSpecularTexture* pVertices = NULL;
 
@@ -1170,6 +1231,8 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DNorm
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DType eVertex3DType, LPVOID VertexArray, int nPlane)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	//填充顶点缓存
 	Vertex3DBase* pVertices3DBase = NULL;
 	Vertex3DTexture* pVertices3DTexture = NULL;
@@ -1256,6 +1319,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DPaddingVertexAndIndex(Vertex3DType
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateAlphaEnable()
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	m_pD3D9Device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);					//Alpha混合开启
 }
 
@@ -1268,6 +1332,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateAlphaEnable()
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateAlphaDisable()
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	m_pD3D9Device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);					//Alpha混合关闭
 }
 
@@ -1280,6 +1345,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateAlphaDisable()
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateLightEnable()
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	m_pD3D9Device->SetRenderState(D3DRS_LIGHTING, TRUE);							//Light开启光照
 }
 
@@ -1292,6 +1358,7 @@ void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateLightEnable()
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateLightDisable()
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	m_pD3D9Device->SetRenderState(D3DRS_LIGHTING, FALSE);							//Light关闭光照
 }
 
@@ -1304,6 +1371,8 @@ void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateLightDisable()
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateSetting()
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	//渲染模式:Alpha混合设置
 	m_pD3D9Device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);					//Alpha混合开启
 	m_pD3D9Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);					//Alpha混合模式:ADD
@@ -1329,6 +1398,8 @@ void WINAPI DirectGraphics3D::DirectGraphics3DRenderStateSetting()
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DRender(Vertex3DType eVertex3DType, int nPlane, bool bIsTexture)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	switch (eVertex3DType)
 	{
 	case Vertex3D_Type_Base:
@@ -1385,6 +1456,8 @@ void WINAPI DirectGraphics3D::DirectGraphics3DRender(Vertex3DType eVertex3DType,
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DRender(Vertex3DType eVertex3DType, int nStartIndex, int nPlane, bool bIsTexture)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	switch (eVertex3DType)
 	{
 	case Vertex3D_Type_Base:
@@ -1440,6 +1513,8 @@ void WINAPI DirectGraphics3D::DirectGraphics3DRender(Vertex3DType eVertex3DType,
 //---------------------------------------------------------------------------------------------------------------------------------------------
 void WINAPI DirectGraphics3D::DirectGraphics3DRender(Vertex3DType eVertex3DType, int nStartIndex, int nPlane, LPDIRECT3DTEXTURE9 pRenderTexture)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	switch (eVertex3DType)
 	{
 	case Vertex3D_Type_Base:

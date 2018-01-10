@@ -75,6 +75,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DIRECTGRAPHICS3D_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -86,6 +87,7 @@
   <ItemGroup>
     <ClInclude Include="DirectCommon.h" />
     <ClInclude Include="DirectGraphics3D.h" />
+    <ClInclude Include="DirectThreadSafe.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectGraphics3D.cpp" />
