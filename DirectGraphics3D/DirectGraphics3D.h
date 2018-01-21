@@ -185,7 +185,9 @@ public:
 	virtual HRESULT WINAPI DirectGraphics3DInit(int nPlane);								//DirectGraphics3D Initialization(初始化)
 	virtual HRESULT WINAPI DirectGraphics3DInit(int nPlane, LPCWSTR lpszStrTexture);		//DirectGraphics3D Initialization(初始化)
 	virtual HRESULT WINAPI DirectGraphics3DInit(Vertex3DType eVertex3DType, int nPlane);	//DirectGraphics3D Initialization(初始化)
-	virtual HRESULT WINAPI DirectGraphics3DInit(Vertex3DType eVertex3DType, int nPlane, LPCWSTR lpszStrTexture);	//DirectGraphics3D Initialization(初始化)
+	virtual HRESULT WINAPI DirectGraphics3DInit(Vertex3DType eVertex3DType, int nPlane, LPCWSTR lpszStrTexture);		//DirectGraphics3D Initialization(初始化)
+	virtual HRESULT WINAPI DirectGraphics3DInit(D3DPOOL ePool, DWORD Usage, Vertex3DType eVertex3DType, int nPlane);	//DirectGraphics3D Initialization(初始化)
+	virtual HRESULT WINAPI DirectGraphics3DInit(D3DPOOL ePool, DWORD Usage, Vertex3DType eVertex3DType, int nPlane, LPCWSTR lpszStrTexture);	//DirectGraphics3D Initialization(初始化)
 	
 	//坐标(T)(矩阵变换)
 	virtual void WINAPI DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara);			//DirectGraphics3D WorldSpaceTransform(Scale)(世界变换)

@@ -224,6 +224,120 @@ HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(Vertex3DType eVertex3DType
 	return S_OK;
 }
 
+//-------------------------------------------------------------------------------------------------------
+// @Function:	 DirectGraphics3DInit(D3DPOOL ePool, DWORD Usage, Vertex3DType eVertex3DType, int nPlane)
+// @Purpose: DirectGraphics3D初始化
+// @Since: v1.00a
+// @Para: D3DPOOL ePool					//D3D内存池类型
+// @Para: DWORD Usage					//D3D附加属性
+// @Para: Vertex3DType eVertex3DType	//顶点类型(枚举)
+// @Para: int nPlane					//绘制平面数(立方体6个平面)(以此类推...)(Vertex类型:Normal)
+// @Return: None
+//--------------------------------------------------------------------------------------------------------
+HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(D3DPOOL ePool, DWORD Usage, Vertex3DType eVertex3DType, int nPlane)
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
+	switch (eVertex3DType)
+	{
+	case Vertex3D_Type_Base:
+		//VertexBuffer创建顶点缓存
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DBase), Usage, D3DFVF_VERTEX3D_BASE, ePool, &m_pD3D9VertexBuffer, NULL));
+		//IndexBuffer创建索引缓存
+		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), Usage, D3DFMT_INDEX16, ePool, &m_pD3D9IndexBuffer, NULL));
+		break;
+	case Vertex3D_Type_Texture:
+		//VertexBuffer创建顶点缓存
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), Usage, D3DFVF_VERTEX3D_TEXTURE, ePool, &m_pD3D9VertexBuffer, NULL));
+		//IndexBuffer创建索引缓存
+		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), Usage, D3DFMT_INDEX16, ePool, &m_pD3D9IndexBuffer, NULL));
+		break;
+	case Vertex3D_Type_Normal:
+		//VertexBuffer创建顶点缓存
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormal), Usage, D3DFVF_VERTEX3D_NORMAL, ePool, &m_pD3D9VertexBuffer, NULL));
+		//IndexBuffer创建索引缓存
+		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), Usage, D3DFMT_INDEX16, ePool, &m_pD3D9IndexBuffer, NULL));
+		break;
+	case Vertex3D_Type_Normal_Texture:
+		//VertexBuffer创建顶点缓存
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalTexture), Usage, D3DFVF_VERTEX3D_NORMAL_TEXTURE, ePool, &m_pD3D9VertexBuffer, NULL));
+		//IndexBuffer创建索引缓存
+		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), Usage, D3DFMT_INDEX16, ePool, &m_pD3D9IndexBuffer, NULL));
+		break;
+	case Vertex3D_Type_Normal_Specular_Texture:
+		//VertexBuffer创建顶点缓存
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalSpecularTexture), Usage, D3DFVF_VERTEX3D_NORMAL_SPECULAR_TEXTURE, ePool, &m_pD3D9VertexBuffer, NULL));
+		//IndexBuffer创建索引缓存
+		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), Usage, D3DFMT_INDEX16, ePool, &m_pD3D9IndexBuffer, NULL));
+		break;
+	default:
+		return E_FAIL;
+		break;
+	}
+
+	return S_OK;
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------
+// @Function:	 DirectGraphics3DInit(D3DPOOL ePool, DWORD Usage, Vertex3DType eVertex3DType, int nPlane, LPCWSTR lpszStrTexture)
+// @Purpose: DirectGraphics3D初始化
+// @Since: v1.00a
+// @Para: D3DPOOL ePool					//D3D内存池类型
+// @Para: DWORD Usage					//D3D附加属性
+// @Para: Vertex3DType eVertex3DType	//顶点类型(枚举)
+// @Para: int nPlane					//绘制平面数(立方体6个平面)(以此类推...)(Vertex类型:Normal)
+// @Return: None
+//-------------------------------------------------------------------------------------------------------------------------------
+HRESULT WINAPI DirectGraphics3D::DirectGraphics3DInit(D3DPOOL ePool, DWORD Usage, Vertex3DType eVertex3DType, int nPlane, LPCWSTR lpszStrTexture)
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
+	switch (eVertex3DType)
+	{
+	case Vertex3D_Type_Base:
+		//VertexBuffer创建顶点缓存
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DBase), Usage, D3DFVF_VERTEX3D_BASE, ePool, &m_pD3D9VertexBuffer, NULL));
+		//IndexBuffer创建索引缓存
+		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), Usage, D3DFMT_INDEX16, ePool, &m_pD3D9IndexBuffer, NULL));
+		break;
+	case Vertex3D_Type_Texture:
+		//VertexBuffer创建顶点缓存
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DTexture), Usage, D3DFVF_VERTEX3D_TEXTURE, ePool, &m_pD3D9VertexBuffer, NULL));
+		//IndexBuffer创建索引缓存
+		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), Usage, D3DFMT_INDEX16, ePool, &m_pD3D9IndexBuffer, NULL));
+		//Texture创建平面纹理
+		VERIFY(D3DXCreateTextureFromFile(m_pD3D9Device, lpszStrTexture, &m_pD3D9Texture));
+		break;
+	case Vertex3D_Type_Normal:
+		//VertexBuffer创建顶点缓存
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormal), Usage, D3DFVF_VERTEX3D_NORMAL, ePool, &m_pD3D9VertexBuffer, NULL));
+		//IndexBuffer创建索引缓存
+		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), Usage, D3DFMT_INDEX16, ePool, &m_pD3D9IndexBuffer, NULL));
+		break;
+	case Vertex3D_Type_Normal_Texture:
+		//VertexBuffer创建顶点缓存
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalTexture), Usage, D3DFVF_VERTEX3D_NORMAL_TEXTURE, ePool, &m_pD3D9VertexBuffer, NULL));
+		//IndexBuffer创建索引缓存
+		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), Usage, D3DFMT_INDEX16, ePool, &m_pD3D9IndexBuffer, NULL));
+		//Texture创建平面纹理
+		VERIFY(D3DXCreateTextureFromFile(m_pD3D9Device, lpszStrTexture, &m_pD3D9Texture));
+		break;
+	case Vertex3D_Type_Normal_Specular_Texture:
+		//VertexBuffer创建顶点缓存
+		VERIFY(m_pD3D9Device->CreateVertexBuffer(4 * nPlane * sizeof(Vertex3DNormalSpecularTexture), Usage, D3DFVF_VERTEX3D_NORMAL_SPECULAR_TEXTURE, ePool, &m_pD3D9VertexBuffer, NULL));
+		//IndexBuffer创建索引缓存
+		VERIFY(m_pD3D9Device->CreateIndexBuffer(6 * nPlane * sizeof(WORD), Usage, D3DFMT_INDEX16, ePool, &m_pD3D9IndexBuffer, NULL));
+		//Texture创建平面ee纹理
+		VERIFY(D3DXCreateTextureFromFile(m_pD3D9Device, lpszStrTexture, &m_pD3D9Texture));
+		break;
+	default:
+		return E_FAIL;
+		break;
+	}
+
+	return S_OK;
+}
+
 //---------------------------------------------------------------------------------------------------
 // @Function:	 DirectGraphics3DWorldSpaceTransform(DG3D_RotatePara sRotatePara)
 // @Purpose: DirectGraphics3D世界坐标变换
