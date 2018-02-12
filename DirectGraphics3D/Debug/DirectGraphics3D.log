@@ -1,6 +1,5 @@
-﻿生成启动时间为 2018/1/21 18:06:12。
+﻿生成启动时间为 2018/2/12 14:31:10。
      1>项目“E:\HYX\Develop\HEL\C++\DirectGraphics3D\DirectGraphics3D\DirectGraphics3D.vcxproj”在节点 2 上(Rebuild 个目标)。
-     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppClean.targets(76,5): warning : 文件“e:\hyx\develop\hel\c++\directgraphics3d\directgraphics3d\debug\vc120.pdb”正由另一进程使用，因此该进程无法访问此文件。
      1>ClCompile:
          D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D DIRECTGRAPHICS3D_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MT /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt DirectGraphics3D.cpp DirectThreadSafe.cpp
          DirectThreadSafe.cpp
@@ -17,4 +16,4 @@
 
 生成成功。
 
-已用时间 00:00:02.31
+已用时间 00:00:01.54

@@ -12,6 +12,7 @@
 * @date		2017-12-8	v1.10a	alopex	Code Do Not Rely On MSVCR Library.
 * @date		2018-1-10	v1.20a	alopex	Code Add dxerr & d3dcompiler Library and Modify Verify.
 * @date		2018-1-10	v1.24a	alopex	Add Thread Safe File & Variable(DirectThreadSafe).
+* @date		2018-2-12	v1.25a	alopex	Add Get & Set & Reset Function.
 */
 #include "DirectCommon.h"
 #include "DirectGraphics3D.h"
@@ -67,6 +68,125 @@ DirectGraphics3D::DirectGraphics3D(IDirect3DDevice9* pD3D9Device)
 	m_pD3D9VertexBuffer = NULL;				//IDirect3DVertexBuffer9接口指针初始化(NULL)
 	m_pD3D9IndexBuffer = NULL;				//IDirect3DIndexBuffer9接口指针初始化(NULL)
 	m_pD3D9Texture = NULL;					//IDirect3DTexture9接口指针初始化(NULL)
+}
+
+//-------------------------------------------------------------------------------
+// @Function:	 IDirect3DDevice9* DirectGraphics3DGetDevice(void) const
+// @Purpose: DirectGraphics3D获取D3D9设备
+// @Since: v1.00a
+// @Para: None
+// @Return: IDirect3DDevice9*
+//-------------------------------------------------------------------------------
+IDirect3DDevice9* WINAPI DirectGraphics3D::DirectGraphics3DGetDevice(void) const
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+	return m_pD3D9Device;
+}
+
+//-------------------------------------------------------------------------------
+// @Function:	 IDirect3DVertexBuffer9* DirectGraphics3DGetVertexBuffer(void) const
+// @Purpose: DirectGraphics3D获取D3D9顶点缓存
+// @Since: v1.00a
+// @Para: None
+// @Return: IDirect3DVertexBuffer9*
+//-------------------------------------------------------------------------------
+IDirect3DVertexBuffer9* WINAPI DirectGraphics3D::DirectGraphics3DGetVertexBuffer(void) const
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+	return m_pD3D9VertexBuffer;
+}
+
+//-------------------------------------------------------------------------------
+// @Function:	 IDirect3DIndexBuffer9* DirectGraphics3DGetIndexBuffer(void) const
+// @Purpose: DirectGraphics3D获取D3D9索引缓存
+// @Since: v1.00a
+// @Para: None
+// @Return: IDirect3DIndexBuffer9*
+//-------------------------------------------------------------------------------
+IDirect3DIndexBuffer9* WINAPI DirectGraphics3D::DirectGraphics3DGetIndexBuffer(void) const
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+	return m_pD3D9IndexBuffer;
+}
+
+//-------------------------------------------------------------------------------
+// @Function:	 IDirect3DTexture9* DirectGraphics3DGetTexture(void) const
+// @Purpose: DirectGraphics3D获取D3D9纹理
+// @Since: v1.00a
+// @Para: None
+// @Return: IDirect3DTexture9*
+//-------------------------------------------------------------------------------
+IDirect3DTexture9* WINAPI DirectGraphics3D::DirectGraphics3DGetTexture(void) const
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+	return m_pD3D9Texture;
+}
+
+//-------------------------------------------------------------------------------
+// @Function:	 void DirectGraphics3DSetDevice(IDirect3DDevice9* pD3D9Device)
+// @Purpose: DirectGraphics3D设置D3D9设备
+// @Since: v1.00a
+// @Para: None
+// @Return: None
+//-------------------------------------------------------------------------------
+void WINAPI DirectGraphics3D::DirectGraphics3DSetDevice(IDirect3DDevice9* pD3D9Device)
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+	m_pD3D9Device = pD3D9Device;
+}
+
+//----------------------------------------------------------------------------------------------
+// @Function:	 void DirectGraphics3DSetVertexBuffer(IDirect3DVertexBuffer9* pD3D9VertexBuffer)
+// @Purpose: DirectGraphics3D设置D3D9顶点缓存
+// @Since: v1.00a
+// @Para: None
+// @Return: None
+//----------------------------------------------------------------------------------------------
+void WINAPI DirectGraphics3D::DirectGraphics3DSetVertexBuffer(IDirect3DVertexBuffer9* pD3D9VertexBuffer)
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+	m_pD3D9VertexBuffer = pD3D9VertexBuffer;
+}
+
+//----------------------------------------------------------------------------------------------
+// @Function:	 void DirectGraphics3DSetIndexBuffer(IDirect3DIndexBuffer9* pD3D9IndexBuffer)
+// @Purpose: DirectGraphics3D设置D3D9索引缓存
+// @Since: v1.00a
+// @Para: None
+// @Return: None
+//----------------------------------------------------------------------------------------------
+void WINAPI DirectGraphics3D::DirectGraphics3DSetIndexBuffer(IDirect3DIndexBuffer9* pD3D9IndexBuffer)
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+	m_pD3D9IndexBuffer = pD3D9IndexBuffer;
+}
+
+//----------------------------------------------------------------------------------------------
+// @Function:	 void DirectGraphics3DSetTexture(IDirect3DTexture9* pD3D9Texture)
+// @Purpose: DirectGraphics3D设置D3D9纹理
+// @Since: v1.00a
+// @Para: None
+// @Return: None
+//----------------------------------------------------------------------------------------------
+void WINAPI DirectGraphics3D::DirectGraphics3DSetTexture(IDirect3DTexture9* pD3D9Texture)
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+	m_pD3D9Texture = pD3D9Texture;
+}
+
+//----------------------------------------------------------------------------------------------
+// @Function:	 HRESULT DirectGraphics3DReset(void)
+// @Purpose: DirectGraphics3D重置(丢失设备)
+// @Since: v1.00a
+// @Para: None
+// @Return: None
+//----------------------------------------------------------------------------------------------
+HRESULT WINAPI DirectGraphics3D::DirectGraphics3DReset(void)
+{
+	SAFE_RELEASE(m_pD3D9VertexBuffer);		//IDirect3DVertexBuffer9接口指针释放
+	SAFE_RELEASE(m_pD3D9IndexBuffer);		//IDirect3DIndexBuffer9接口指针释放
+	SAFE_RELEASE(m_pD3D9Texture);			//IDirect3DTexture9接口指针释放
+	return S_OK;
 }
 
 //-------------------------------------------------------------------------------

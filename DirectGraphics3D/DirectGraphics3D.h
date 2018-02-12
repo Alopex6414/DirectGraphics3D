@@ -12,6 +12,7 @@
 * @date		2017-12-8	v1.10a	alopex	Code Do Not Rely On MSVCR Library.
 * @date		2018-1-10	v1.20a	alopex	Code Add dxerr & d3dcompiler Library and Modify Verify.
 * @date		2018-1-10	v1.24a	alopex	Add Thread Safe File & Variable(DirectThreadSafe).
+* @date		2018-2-12	v1.25a	alopex	Add Get & Set & Reset Function.
 */
 #pragma once
 
@@ -180,6 +181,21 @@ public:
 
 	//构造
 	DirectGraphics3D(IDirect3DDevice9* pD3D9Device);	//DirectGraphics3D Constructor Function
+
+	//访问
+	virtual IDirect3DDevice9* WINAPI DirectGraphics3DGetDevice(void) const;					//DirectGraphics3D Get D3D9 Device 获取D3D9设备
+	virtual IDirect3DVertexBuffer9* WINAPI DirectGraphics3DGetVertexBuffer(void) const;		//DirectGraphics3D Get D3D9 Vertex Buffer 获取D3D9顶点缓存
+	virtual IDirect3DIndexBuffer9* WINAPI DirectGraphics3DGetIndexBuffer(void) const;		//DirectGraphics3D Get D3D9 Index Buffer 获取D3D9索引缓存
+	virtual IDirect3DTexture9* WINAPI DirectGraphics3DGetTexture(void) const;				//DirectGraphics3D Get D3D9 Texture 获取D3D9纹理
+
+	//控制
+	virtual void WINAPI DirectGraphics3DSetDevice(IDirect3DDevice9* pD3D9Device);							//DirectGraphics3D Set D3D9 Device 设置D3D9设备
+	virtual void WINAPI DirectGraphics3DSetVertexBuffer(IDirect3DVertexBuffer9* pD3D9VertexBuffer);			//DirectGraphics3D Set D3D9 Vertex Buffer 设置D3D9顶点缓存
+	virtual void WINAPI DirectGraphics3DSetIndexBuffer(IDirect3DIndexBuffer9* pD3D9IndexBuffer);			//DirectGraphics3D Set D3D9 Index Buffer 设置D3D9索引缓存
+	virtual void WINAPI DirectGraphics3DSetTexture(IDirect3DTexture9* pD3D9Texture);						//DirectGraphics3D Set D3D9 Texture 设置D3D9纹理
+
+	//重置(丢失设备)
+	virtual HRESULT WINAPI DirectGraphics3DReset(void);										//DirectGraphics3D Reset D3D9重置(Reset之后需要调用Init函数重新初始化)
 
 	//初始化
 	virtual HRESULT WINAPI DirectGraphics3DInit(int nPlane);								//DirectGraphics3D Initialization(初始化)
