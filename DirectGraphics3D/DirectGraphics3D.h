@@ -6,13 +6,14 @@
 * @file		DirectGraphics3D.h
 * @brief	This File is DirectGraphics3D DLL Project.
 * @author	Alopex/Helium
-* @version	v1.21a
+* @version	v1.26a
 * @date		2017-11-29	v1.00a	alopex	Create Project.
 * @date		2017-12-3	v1.01a	alopex	Modify Bug.
 * @date		2017-12-8	v1.10a	alopex	Code Do Not Rely On MSVCR Library.
 * @date		2018-1-10	v1.20a	alopex	Code Add dxerr & d3dcompiler Library and Modify Verify.
 * @date		2018-1-10	v1.24a	alopex	Add Thread Safe File & Variable(DirectThreadSafe).
 * @date		2018-2-12	v1.25a	alopex	Add Get & Set & Reset Function.
+* @date		2018-4-12	v1.26a	alopex	Add Macro Call Mode.
 */
 #pragma once
 
@@ -28,6 +29,8 @@
 #else
 #define DIRECTGRAPHICS3D_API	__declspec(dllimport)
 #endif
+
+#define DIRECTGRAPHICS3D_CALLMODE	__stdcall
 
 //Struct Definition
 //Vertex 3D Base(3D基本顶点格式)
@@ -183,91 +186,91 @@ public:
 	DirectGraphics3D(IDirect3DDevice9* pD3D9Device);	//DirectGraphics3D Constructor Function
 
 	//访问
-	virtual IDirect3DDevice9* WINAPI DirectGraphics3DGetDevice(void) const;					//DirectGraphics3D Get D3D9 Device 获取D3D9设备
-	virtual IDirect3DVertexBuffer9* WINAPI DirectGraphics3DGetVertexBuffer(void) const;		//DirectGraphics3D Get D3D9 Vertex Buffer 获取D3D9顶点缓存
-	virtual IDirect3DIndexBuffer9* WINAPI DirectGraphics3DGetIndexBuffer(void) const;		//DirectGraphics3D Get D3D9 Index Buffer 获取D3D9索引缓存
-	virtual IDirect3DTexture9* WINAPI DirectGraphics3DGetTexture(void) const;				//DirectGraphics3D Get D3D9 Texture 获取D3D9纹理
+	virtual IDirect3DDevice9* DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DGetDevice(void) const;					//DirectGraphics3D Get D3D9 Device 获取D3D9设备
+	virtual IDirect3DVertexBuffer9* DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DGetVertexBuffer(void) const;		//DirectGraphics3D Get D3D9 Vertex Buffer 获取D3D9顶点缓存
+	virtual IDirect3DIndexBuffer9* DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DGetIndexBuffer(void) const;		//DirectGraphics3D Get D3D9 Index Buffer 获取D3D9索引缓存
+	virtual IDirect3DTexture9* DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DGetTexture(void) const;				//DirectGraphics3D Get D3D9 Texture 获取D3D9纹理
 
 	//控制
-	virtual void WINAPI DirectGraphics3DSetDevice(IDirect3DDevice9* pD3D9Device);							//DirectGraphics3D Set D3D9 Device 设置D3D9设备
-	virtual void WINAPI DirectGraphics3DSetVertexBuffer(IDirect3DVertexBuffer9* pD3D9VertexBuffer);			//DirectGraphics3D Set D3D9 Vertex Buffer 设置D3D9顶点缓存
-	virtual void WINAPI DirectGraphics3DSetIndexBuffer(IDirect3DIndexBuffer9* pD3D9IndexBuffer);			//DirectGraphics3D Set D3D9 Index Buffer 设置D3D9索引缓存
-	virtual void WINAPI DirectGraphics3DSetTexture(IDirect3DTexture9* pD3D9Texture);						//DirectGraphics3D Set D3D9 Texture 设置D3D9纹理
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DSetDevice(IDirect3DDevice9* pD3D9Device);						//DirectGraphics3D Set D3D9 Device 设置D3D9设备
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DSetVertexBuffer(IDirect3DVertexBuffer9* pD3D9VertexBuffer);		//DirectGraphics3D Set D3D9 Vertex Buffer 设置D3D9顶点缓存
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DSetIndexBuffer(IDirect3DIndexBuffer9* pD3D9IndexBuffer);			//DirectGraphics3D Set D3D9 Index Buffer 设置D3D9索引缓存
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DSetTexture(IDirect3DTexture9* pD3D9Texture);						//DirectGraphics3D Set D3D9 Texture 设置D3D9纹理
 
 	//重置(丢失设备)
-	virtual HRESULT WINAPI DirectGraphics3DReset(void);										//DirectGraphics3D Reset D3D9重置(Reset之后需要调用Init函数重新初始化)
+	virtual HRESULT DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DReset(void);										//DirectGraphics3D Reset D3D9重置(Reset之后需要调用Init函数重新初始化)
 
 	//初始化
-	virtual HRESULT WINAPI DirectGraphics3DInit(int nPlane);								//DirectGraphics3D Initialization(初始化)
-	virtual HRESULT WINAPI DirectGraphics3DInit(int nPlane, LPCWSTR lpszStrTexture);		//DirectGraphics3D Initialization(初始化)
-	virtual HRESULT WINAPI DirectGraphics3DInit(Vertex3DType eVertex3DType, int nPlane);	//DirectGraphics3D Initialization(初始化)
-	virtual HRESULT WINAPI DirectGraphics3DInit(Vertex3DType eVertex3DType, int nPlane, LPCWSTR lpszStrTexture);		//DirectGraphics3D Initialization(初始化)
-	virtual HRESULT WINAPI DirectGraphics3DInit(D3DPOOL ePool, DWORD Usage, Vertex3DType eVertex3DType, int nPlane);	//DirectGraphics3D Initialization(初始化)
-	virtual HRESULT WINAPI DirectGraphics3DInit(D3DPOOL ePool, DWORD Usage, Vertex3DType eVertex3DType, int nPlane, LPCWSTR lpszStrTexture);	//DirectGraphics3D Initialization(初始化)
+	virtual HRESULT DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DInit(int nPlane);									//DirectGraphics3D Initialization(初始化)
+	virtual HRESULT DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DInit(int nPlane, LPCWSTR lpszStrTexture);			//DirectGraphics3D Initialization(初始化)
+	virtual HRESULT DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DInit(Vertex3DType eVertex3DType, int nPlane);		//DirectGraphics3D Initialization(初始化)
+	virtual HRESULT DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DInit(Vertex3DType eVertex3DType, int nPlane, LPCWSTR lpszStrTexture);		//DirectGraphics3D Initialization(初始化)
+	virtual HRESULT DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DInit(D3DPOOL ePool, DWORD Usage, Vertex3DType eVertex3DType, int nPlane);	//DirectGraphics3D Initialization(初始化)
+	virtual HRESULT DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DInit(D3DPOOL ePool, DWORD Usage, Vertex3DType eVertex3DType, int nPlane, LPCWSTR lpszStrTexture);	//DirectGraphics3D Initialization(初始化)
 	
 	//坐标(T)(矩阵变换)
-	virtual void WINAPI DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara);			//DirectGraphics3D WorldSpaceTransform(Scale)(世界变换)
-	virtual void WINAPI DirectGraphics3DWorldSpaceTransform(DG3D_RotatePara sRotatePara);		//DirectGraphics3D WorldSpaceTransform(Rotate)(世界变换)
-	virtual void WINAPI DirectGraphics3DWorldSpaceTransform(DG3D_TranslatePara sTranslatePara);	//DirectGraphics3D WorldSpaceTransform(Translate)(世界变换)
-	virtual void WINAPI DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara, DG3D_RotatePara sRotatePara);									//DirectGraphics3D WorldSpaceTransform(世界变换)
-	virtual void WINAPI DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara, DG3D_TranslatePara sTranslatePara);								//DirectGraphics3D WorldSpaceTransform(世界变换)
-	virtual void WINAPI DirectGraphics3DWorldSpaceTransform(DG3D_RotatePara sRotatePara, DG3D_TranslatePara sTranslatePara);							//DirectGraphics3D WorldSpaceTransform(世界变换)
-	virtual void WINAPI DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara, DG3D_RotatePara sRotatePara, DG3D_TranslatePara sTranslatePara);	//DirectGraphics3D WorldSpaceTransform(世界变换)
-	virtual void WINAPI DirectGraphics3DWorldSpaceTransform(DG3D_WorldTransformPara sWorldTransformPara);												//DirectGraphics3D WorldSpaceTransform(世界变换)
-	virtual void WINAPI DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pvEye);																			//DirectGraphics3D ViewSpaceTransform(取景变换)
-	virtual void WINAPI DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pvEye, D3DXVECTOR3* pvAt);														//DirectGraphics3D ViewSpaceTransform(取景变换)
-	virtual void WINAPI DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pvEye, D3DXVECTOR3* pvAt, D3DXVECTOR3* pvUp);									//DirectGraphics3D ViewSpaceTransform(取景变换)
-	virtual void WINAPI DirectGraphics3DViewSpaceTransform(DG3D_ViewTransformPara sViewTransformPara);													//DirectGraphics3D ViewSpaceTransform(取景变换)
-	virtual void WINAPI DirectGraphics3DPerspectiveTransform(DG3D_PrespectiveTransformPara sPrespectiveTransformPara);									//DirectGraphics3D PerspectiveTransform(透视/投影变换)
-	virtual void WINAPI DirectGraphics3DPerspectiveTransform(float fovy, float fAspect, float fZn, float fZf);											//DirectGraphics3D PerspectiveTransform(透视/投影变换)
-	virtual void WINAPI DirectGraphics3DViewPortTransform(DG3D_ViewPortTransformPara sViewPortTransformPara);											//DirectGraphics3D ViewPortTransform(视口变换)
-	virtual void WINAPI DirectGraphics3DViewPortTransform(int nUserWidth, int nUserHeight);																//DirectGraphics3D ViewPortTransform(视口变换)
-	virtual void WINAPI DirectGraphics3DMatrixTransform(DG3D_WorldTransformPara sWorldTransformPara, DG3D_ViewTransformPara sViewTransformPara, DG3D_PrespectiveTransformPara sPrespectiveTransformPara, DG3D_ViewPortTransformPara sViewPortTransformPara);					//DirectGraphics3D MatrixTransform
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara);			//DirectGraphics3D WorldSpaceTransform(Scale)(世界变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DWorldSpaceTransform(DG3D_RotatePara sRotatePara);		//DirectGraphics3D WorldSpaceTransform(Rotate)(世界变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DWorldSpaceTransform(DG3D_TranslatePara sTranslatePara);	//DirectGraphics3D WorldSpaceTransform(Translate)(世界变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara, DG3D_RotatePara sRotatePara);										//DirectGraphics3D WorldSpaceTransform(世界变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara, DG3D_TranslatePara sTranslatePara);								//DirectGraphics3D WorldSpaceTransform(世界变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DWorldSpaceTransform(DG3D_RotatePara sRotatePara, DG3D_TranslatePara sTranslatePara);								//DirectGraphics3D WorldSpaceTransform(世界变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DWorldSpaceTransform(DG3D_ScalePara sScalePara, DG3D_RotatePara sRotatePara, DG3D_TranslatePara sTranslatePara);	//DirectGraphics3D WorldSpaceTransform(世界变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DWorldSpaceTransform(DG3D_WorldTransformPara sWorldTransformPara);												//DirectGraphics3D WorldSpaceTransform(世界变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pvEye);																			//DirectGraphics3D ViewSpaceTransform(取景变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pvEye, D3DXVECTOR3* pvAt);														//DirectGraphics3D ViewSpaceTransform(取景变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DViewSpaceTransform(D3DXVECTOR3* pvEye, D3DXVECTOR3* pvAt, D3DXVECTOR3* pvUp);									//DirectGraphics3D ViewSpaceTransform(取景变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DViewSpaceTransform(DG3D_ViewTransformPara sViewTransformPara);													//DirectGraphics3D ViewSpaceTransform(取景变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPerspectiveTransform(DG3D_PrespectiveTransformPara sPrespectiveTransformPara);									//DirectGraphics3D PerspectiveTransform(透视/投影变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPerspectiveTransform(float fovy, float fAspect, float fZn, float fZf);											//DirectGraphics3D PerspectiveTransform(透视/投影变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DViewPortTransform(DG3D_ViewPortTransformPara sViewPortTransformPara);											//DirectGraphics3D ViewPortTransform(视口变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DViewPortTransform(int nUserWidth, int nUserHeight);																//DirectGraphics3D ViewPortTransform(视口变换)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DMatrixTransform(DG3D_WorldTransformPara sWorldTransformPara, DG3D_ViewTransformPara sViewTransformPara, DG3D_PrespectiveTransformPara sPrespectiveTransformPara, DG3D_ViewPortTransformPara sViewPortTransformPara);					//DirectGraphics3D MatrixTransform
 
 	//光照(L)
-	virtual void WINAPI DirectGraphics3DLightSettingPoint(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vPosition, float fRange, D3DCOLOR dwAmbientLight);																							//DirectGraphics3D Light Setting(光源设置)(点光源)
-	virtual void WINAPI DirectGraphics3DLightSettingDirectional(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vDirectional, D3DCOLOR dwAmbientLight);																								//DirectGraphics3D Light Setting(光源设置)(平行光源)
-	virtual void WINAPI DirectGraphics3DLightSettingSpot(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vPosition, D3DXVECTOR3 vDirectional, float fRange, float fFallOff, float fPhi, float fTheta, D3DCOLOR dwAmbientLight);						//DirectGraphics3D Light Setting(光源设置)(聚光灯光源)
-	virtual void WINAPI DirectGraphics3DLightSetting(D3DLIGHT9* pD3D9Light, D3DCOLOR dwAmbientLight);																																											//DirectGraphics3D Light Setting(光源设置)
-	virtual void WINAPI DirectGraphics3DLightSetting(LightType eLightType, D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vPosition, D3DXVECTOR3 vDirectional, float fRange, float fFallOff, float fPhi, float fTheta, D3DCOLOR dwAmbientLight);		//DirectGraphics3D Light Setting(光源设置)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DLightSettingPoint(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vPosition, float fRange, D3DCOLOR dwAmbientLight);																							//DirectGraphics3D Light Setting(光源设置)(点光源)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DLightSettingDirectional(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vDirectional, D3DCOLOR dwAmbientLight);																								//DirectGraphics3D Light Setting(光源设置)(平行光源)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DLightSettingSpot(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vPosition, D3DXVECTOR3 vDirectional, float fRange, float fFallOff, float fPhi, float fTheta, D3DCOLOR dwAmbientLight);						//DirectGraphics3D Light Setting(光源设置)(聚光灯光源)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DLightSetting(D3DLIGHT9* pD3D9Light, D3DCOLOR dwAmbientLight);																																											//DirectGraphics3D Light Setting(光源设置)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DLightSetting(LightType eLightType, D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXVECTOR3 vPosition, D3DXVECTOR3 vDirectional, float fRange, float fFallOff, float fPhi, float fTheta, D3DCOLOR dwAmbientLight);		//DirectGraphics3D Light Setting(光源设置)
 
 	//材质(M)
-	virtual void WINAPI DirectGraphics3DMaterialSetting(D3DMATERIAL9* pD3D9Material);																					//DirectGraphics3D Material Setting(材质设置)
-	virtual void WINAPI DirectGraphics3DMaterialSetting(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXCOLOR cEmissive);								//DirectGraphics3D Material Setting(材质设置)
-	virtual void WINAPI DirectGraphics3DMaterialSetting(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXCOLOR cEmissive, float fPower);				//DirectGraphics3D Material Setting(材质设置)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DMaterialSetting(D3DMATERIAL9* pD3D9Material);																					//DirectGraphics3D Material Setting(材质设置)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DMaterialSetting(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXCOLOR cEmissive);								//DirectGraphics3D Material Setting(材质设置)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DMaterialSetting(D3DXCOLOR cAmbient, D3DXCOLOR cDiffuse, D3DXCOLOR cSpecular, D3DXCOLOR cEmissive, float fPower);				//DirectGraphics3D Material Setting(材质设置)
 
 	//填充
 	//顶点
-	virtual void WINAPI DirectGraphics3DPaddingVertex(Vertex3DBase* VertexArray, int nSize);						//DirectGraphics3D Padding Vertex(填充顶点数据)(3D基本顶点格式)
-	virtual void WINAPI DirectGraphics3DPaddingVertex(Vertex3DTexture* VertexArray, int nSize);						//DirectGraphics3D Padding Vertex(填充顶点数据)(3D纹理顶点格式)
-	virtual void WINAPI DirectGraphics3DPaddingVertex(Vertex3DNormal* VertexArray, int nSize);						//DirectGraphics3D Padding Vertex(填充顶点数据)(3D法线顶点格式)
-	virtual void WINAPI DirectGraphics3DPaddingVertex(Vertex3DNormalTexture* VertexArray, int nSize);				//DirectGraphics3D Padding Vertex(填充顶点数据)(3D法线纹理顶点格式)
-	virtual void WINAPI DirectGraphics3DPaddingVertex(Vertex3DNormalSpecularTexture* VertexArray, int nSize);		//DirectGraphics3D Padding Vertex(填充顶点数据)(3D法线镜面反射纹理顶点格式)
-	virtual void WINAPI DirectGraphics3DPaddingVertex(Vertex3DType eVertex3DType, LPVOID VertexArray, int nSize);	//DirectGraphics3D Padding Vertex(填充顶点数据)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertex(Vertex3DBase* VertexArray, int nSize);						//DirectGraphics3D Padding Vertex(填充顶点数据)(3D基本顶点格式)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertex(Vertex3DTexture* VertexArray, int nSize);						//DirectGraphics3D Padding Vertex(填充顶点数据)(3D纹理顶点格式)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertex(Vertex3DNormal* VertexArray, int nSize);						//DirectGraphics3D Padding Vertex(填充顶点数据)(3D法线顶点格式)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertex(Vertex3DNormalTexture* VertexArray, int nSize);				//DirectGraphics3D Padding Vertex(填充顶点数据)(3D法线纹理顶点格式)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertex(Vertex3DNormalSpecularTexture* VertexArray, int nSize);		//DirectGraphics3D Padding Vertex(填充顶点数据)(3D法线镜面反射纹理顶点格式)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertex(Vertex3DType eVertex3DType, LPVOID VertexArray, int nSize);	//DirectGraphics3D Padding Vertex(填充顶点数据)
 
 	//索引
-	virtual void WINAPI DirectGraphics3DPaddingIndex(int nPlane);													//DirectGraphics3D Padding Index(填充索引数据)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingIndex(int nPlane);													//DirectGraphics3D Padding Index(填充索引数据)
 
 	//All
-	virtual void WINAPI DirectGraphics3DPaddingVertexAndIndex(Vertex3DBase* VertexArray, int nPlane);							//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
-	virtual void WINAPI DirectGraphics3DPaddingVertexAndIndex(Vertex3DTexture* VertexArray, int nPlane);						//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
-	virtual void WINAPI DirectGraphics3DPaddingVertexAndIndex(Vertex3DNormal* VertexArray, int nPlane);							//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
-	virtual void WINAPI DirectGraphics3DPaddingVertexAndIndex(Vertex3DNormalTexture* VertexArray, int nPlane);					//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
-	virtual void WINAPI DirectGraphics3DPaddingVertexAndIndex(Vertex3DNormalSpecularTexture* VertexArray, int nPlane);			//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
-	virtual void WINAPI DirectGraphics3DPaddingVertexAndIndex(Vertex3DType eVertex3DType, LPVOID VertexArray, int nPlane);		//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertexAndIndex(Vertex3DBase* VertexArray, int nPlane);							//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertexAndIndex(Vertex3DTexture* VertexArray, int nPlane);						//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertexAndIndex(Vertex3DNormal* VertexArray, int nPlane);							//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertexAndIndex(Vertex3DNormalTexture* VertexArray, int nPlane);					//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertexAndIndex(Vertex3DNormalSpecularTexture* VertexArray, int nPlane);			//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DPaddingVertexAndIndex(Vertex3DType eVertex3DType, LPVOID VertexArray, int nPlane);		//DirectGraphics3D Padding Vertex and Index(填充顶点和索引数据)
 
 	//渲染
 	//渲染模式
-	virtual void WINAPI DirectGraphics3DRenderStateAlphaEnable();																//DirectGraphics3D Render State Setting(开启Alpha混合)//渲染完毕关闭Alpha混合
-	virtual void WINAPI DirectGraphics3DRenderStateAlphaDisable();																//DirectGraphics3D Render State Setting(关闭Alpha混合)
-	virtual void WINAPI DirectGraphics3DRenderStateLightEnable();																//DirectGraphics3D Render State Setting(开启Light光照)
-	virtual void WINAPI DirectGraphics3DRenderStateLightDisable();																//DirectGraphics3D Render State Setting(关闭Light光照)
-	virtual void WINAPI DirectGraphics3DRenderStateSetting();																	//DirectGraphics3D Render State Setting(设置渲染模式)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DRenderStateAlphaEnable();																//DirectGraphics3D Render State Setting(开启Alpha混合)//渲染完毕关闭Alpha混合
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DRenderStateAlphaDisable();																//DirectGraphics3D Render State Setting(关闭Alpha混合)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DRenderStateLightEnable();																//DirectGraphics3D Render State Setting(开启Light光照)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DRenderStateLightDisable();																//DirectGraphics3D Render State Setting(关闭Light光照)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DRenderStateSetting();																	//DirectGraphics3D Render State Setting(设置渲染模式)
 
 	//渲染
-	virtual void WINAPI DirectGraphics3DRender(Vertex3DType eVertex3DType, int nPlane, bool bIsTexture = false);											//DirectGraphics3D Render(渲染)
-	virtual void WINAPI DirectGraphics3DRender(Vertex3DType eVertex3DType, int nStartIndex, int nPlane, bool bIsTexture = false);							//DirectGraphics3D Render(渲染)
-	virtual void WINAPI DirectGraphics3DRender(Vertex3DType eVertex3DType, int nStartIndex, int nPlane, LPDIRECT3DTEXTURE9 pRenderTexture);					//DirectGraphics3D Render(渲染)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DRender(Vertex3DType eVertex3DType, int nPlane, bool bIsTexture = false);											//DirectGraphics3D Render(渲染)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DRender(Vertex3DType eVertex3DType, int nStartIndex, int nPlane, bool bIsTexture = false);							//DirectGraphics3D Render(渲染)
+	virtual void DIRECTGRAPHICS3D_CALLMODE DirectGraphics3DRender(Vertex3DType eVertex3DType, int nStartIndex, int nPlane, LPDIRECT3DTEXTURE9 pRenderTexture);					//DirectGraphics3D Render(渲染)
 };
 
 
