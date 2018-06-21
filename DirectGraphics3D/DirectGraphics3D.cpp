@@ -6,7 +6,7 @@
 * @file		DirectGraphics3D.cpp
 * @brief	This File is DirectGraphics3D DLL Project.
 * @author	Alopex/Helium
-* @version	v1.26a
+* @version	v1.27a
 * @date		2017-11-29	v1.00a	alopex	Create Project.
 * @date		2017-12-3	v1.01a	alopex	Modify Bug.
 * @date		2017-12-8	v1.10a	alopex	Code Do Not Rely On MSVCR Library.
@@ -14,6 +14,7 @@
 * @date		2018-1-10	v1.24a	alopex	Add Thread Safe File & Variable(DirectThreadSafe).
 * @date		2018-2-12	v1.25a	alopex	Add Get & Set & Reset Function.
 * @date		2018-4-12	v1.26a	alopex	Add Macro Call Mode.
+* @date		2018-06-21	v1.27a	alopex	Add Version Infomation.
 */
 #include "DirectCommon.h"
 #include "DirectGraphics3D.h"
